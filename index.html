@@ -2555,24 +2555,26 @@ footer {
   .nav-links, .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
   #navbar {
-    left: 0;
-    top: 0;
-    transform: none;
-    width: 100%;
-    border-radius: 0;
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 20px 14px calc(20px + env(safe-area-inset-left, 0px));
-    padding-right: calc(16px + env(safe-area-inset-right, 0px));
-    background: rgba(12,10,7,0.86);
-    border: none;
-    border-bottom: 1px solid rgba(200,169,110,0.22);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+    left: 50%;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 480px;
+    border-radius: 999px;
+    padding: 8px 10px 8px 22px;
+    background: rgba(22,18,13,0.5);
+    backdrop-filter: blur(20px) saturate(170%);
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 14px 34px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
   }
   #navbar.scrolled {
-    width: 100%;
-    padding: calc(10px + env(safe-area-inset-top, 0px)) 20px 10px calc(20px + env(safe-area-inset-left, 0px));
-    background: rgba(10,8,6,0.94);
+    width: calc(100% - 56px);
+    padding: 6px 8px 6px 20px;
+    background: rgba(16,13,9,0.68);
+    box-shadow: 0 14px 34px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14);
   }
-  .nav-logo-img { height: 54px; }
+  .nav-logo-img { height: 48px; }
   .hero { min-height: 82vh; align-items: flex-start; padding: 136px 0 40px; }
   .hero-grid { padding: 0 26px; max-width: 100%; }
   .hero-cols { grid-template-columns: 1fr; gap: 0; margin-top: 10px; }
