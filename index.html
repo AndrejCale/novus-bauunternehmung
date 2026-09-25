@@ -2382,15 +2382,22 @@ footer {
 .footer-bg-text {
   position: absolute;
   font-family: var(--font-display);
-  font-size: 300px;
-  color: var(--accent);
-  opacity: 0.05;
-  bottom: 0;
-  left: -20px;
-  line-height: 0.9;
+  font-size: clamp(140px, 20vw, 340px);
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(212,177,115,0.55);
+  text-stroke: 1.5px rgba(212,177,115,0.55);
+  opacity: 0.4;
+  bottom: -4%;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 0.85;
   pointer-events: none;
   user-select: none;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+@supports not ((-webkit-text-stroke: 1px black) or (text-stroke: 1px black)) {
+  .footer-bg-text { color: var(--accent); opacity: 0.05; }
 }
 .footer-inner {
   max-width: 1320px;
@@ -2599,6 +2606,7 @@ footer {
   .hero-scroll-indicator { display: none; }
   .stats-grid { grid-template-columns: repeat(2,1fr); row-gap: 40px; }
   .stat-item:nth-child(3)::before { display: none; }
+  .footer-bg-text { font-size: clamp(80px, 24vw, 150px); bottom: 8%; }
   .stat-item { padding: 0 16px; }
   .value-row { grid-template-columns: 44px 1fr; gap: 20px; padding: 24px 20px; margin: 0 -20px; }
   .value-num { font-size: 32px; }
