@@ -687,9 +687,9 @@ body.cursor-img #cursor-follower .cursor-label { opacity: 1; }
   max-width: 500px;
   padding: 36px 40px 40px;
   border-radius: 28px;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(12px) saturate(140%);
-  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(10px) saturate(135%);
+  -webkit-backdrop-filter: blur(10px) saturate(135%);
   border: 1px solid rgba(255,255,255,0.3);
   box-shadow: 0 24px 60px rgba(34,29,20,0.08), inset 0 1px 0 rgba(255,255,255,0.3);
 }
@@ -2860,13 +2860,13 @@ footer {
   animation-name: heroSkylineOrbRise;
   animation-timing-function: ease-out;
   animation-iteration-count: infinite;
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
 }
 @keyframes heroSkylineOrbRise {
-  0% { transform: translate(0,0) scale(0.5); opacity: 0; filter: blur(0px); }
-  16% { opacity: var(--peak, .7); transform: translate(calc(var(--dx, 10px) * 0.25), calc(-1 * var(--rise, 300px) * 0.16)) scale(1); filter: blur(0px); }
-  55% { opacity: var(--peak, .7); filter: blur(0px); }
-  100% { transform: translate(var(--dx, 10px), calc(-1 * var(--rise, 300px))) scale(2); opacity: 0; filter: blur(3px); }
+  0% { transform: translate3d(0,0,0) scale(0.5); opacity: 0; }
+  16% { opacity: var(--peak, .7); transform: translate3d(calc(var(--dx, 10px) * 0.25), calc(-1 * var(--rise, 300px) * 0.16), 0) scale(1); }
+  55% { opacity: var(--peak, .7); }
+  100% { transform: translate3d(var(--dx, 10px), calc(-1 * var(--rise, 300px)), 0) scale(1.8); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-skyline-art, .hero-skyline-art svg, .hero-skyline-sweep,
@@ -3382,11 +3382,11 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
 /* ── HERO: beams drop in, skyline rises behind a laser line ── */
 .hero-spark-title .nl {
   display: inline-block;
-  animation: novusGleam 3.4s ease-in-out infinite;
+  animation: novusGleam 6.5s ease-in-out infinite;
   animation-delay: calc(var(--i) * 0.1s);
 }
 .hero.animate-in .hero-spark-title .nl {
-  animation: novusBeam 1.15s cubic-bezier(.2,.9,.25,1.12) both, novusGleam 3.4s ease-in-out infinite;
+  animation: novusBeam 1.15s cubic-bezier(.2,.9,.25,1.12) both, novusGleam 6.5s ease-in-out infinite;
   animation-delay: calc(0.12s + var(--i) * 0.09s), calc(1.5s + var(--i) * 0.1s);
 }
 @keyframes novusBeam {
@@ -3396,19 +3396,19 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
   100% { transform: none; opacity: 1; filter: blur(0); }
 }
 .hero-skyline-art { opacity: 1; transform: none; animation: heroSkylineFloat 9s ease-in-out 3.2s infinite; }
-.hero:not(.animate-in) .hero-skyline-art svg { clip-path: inset(100% 0 0 0); }
-.hero.animate-in .hero-skyline-art svg {
-  animation: heroSkylineRise 2.6s cubic-bezier(.22,.8,.2,1) .2s both, heroSkylineGlow 6s ease-in-out 3.2s infinite;
-}
-@keyframes heroSkylineRise { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+.hero-skyline-art svg { filter: none !important; animation: none; transform-origin: 50% 100%; will-change: transform, opacity; }
+.hero:not(.animate-in) .hero-skyline-art svg { opacity: 0; transform: translate3d(0, 12%, 0) scaleY(0.94); }
+.hero.animate-in .hero-skyline-art svg { animation: heroSkylineRise 2.2s cubic-bezier(.22,.8,.2,1) .15s both; }
+@keyframes heroSkylineRise { from { opacity: 0; transform: translate3d(0, 12%, 0) scaleY(0.94); } to { opacity: 0.5; transform: none; } }
 .hero-skyline-art::after {
-  content: ''; position: absolute; left: 4%; right: 4%; bottom: 0; height: 2px; opacity: 0;
-  background: linear-gradient(90deg, transparent, #E8C98A 20%, #fff 50%, #E8C98A 80%, transparent);
-  box-shadow: 0 0 18px 4px rgba(232,201,138,.5);
-  pointer-events: none;
+  content: ''; position: absolute; left: 4%; right: 4%; top: 0; bottom: 0; opacity: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, #E8C98A 20%, #fff 50%, #E8C98A 80%, transparent) bottom / 100% 2px no-repeat,
+    linear-gradient(to top, rgba(232,201,138,.32), rgba(232,201,138,0)) bottom / 100% 22px no-repeat;
+  will-change: transform, opacity;
 }
-.hero.animate-in .hero-skyline-art::after { animation: skyLaser 2.6s cubic-bezier(.22,.8,.2,1) .2s both; }
-@keyframes skyLaser { 0% { bottom: 0; opacity: 0; } 6% { opacity: 1; } 90% { opacity: 1; } 100% { bottom: 100%; opacity: 0; } }
+.hero.animate-in .hero-skyline-art::after { animation: skyLaser 2.2s cubic-bezier(.22,.8,.2,1) .15s both; }
+@keyframes skyLaser { 0% { transform: translate3d(0,0,0); opacity: 0; } 8% { opacity: 1; } 88% { opacity: 1; } 100% { transform: translate3d(0,-100%,0); opacity: 0; } }
 
 /* hero floating photo cards */
 .hc-photo { aspect-ratio: 16/11; background: #14110c; }
@@ -3975,6 +3975,28 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
   .ref-map .m-scale text, .ref-map .m-attr { font-size: 11px; }
   .ref-map .m-pin .core { r: 9; }
   .ref-map .m-dot { r: 3.5; }
+}
+
+.hero-skyline-sweep { background: none !important; opacity: 1 !important; animation: none !important; overflow: hidden; }
+.hero-skyline-sweep::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; opacity: .3;
+  background: linear-gradient(100deg, transparent, rgba(255,246,222,.35) 40%, rgba(255,255,255,.5) 50%, rgba(255,246,222,.35) 60%, transparent);
+  transform: translate3d(-120%,0,0); will-change: transform;
+  animation: sweepX 13s ease-in-out 2.6s infinite;
+}
+@keyframes sweepX { 0% { transform: translate3d(-120%,0,0); } 38%, 100% { transform: translate3d(270%,0,0); } }
+.hero-off .hero-skyline-sweep::before { animation-play-state: paused; }
+.hero-skyline-mote { will-change: transform, opacity; }
+/* wordmark drop without animated blur (blur on huge text is expensive) */
+@keyframes novusBeam {
+  0%   { transform: translate3d(0,-1.15em,0) rotate(-7deg); opacity: 0; }
+  55%  { transform: translate3d(0,0.05em,0) rotate(1.2deg); opacity: 1; }
+  75%  { transform: translate3d(0,-0.025em,0) rotate(-0.4deg); }
+  100% { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-skyline-sweep::before { animation: none; display: none; }
+  .hero:not(.animate-in) .hero-skyline-art svg, .hero-skyline-art svg { opacity: .5; transform: none; }
 }
 </style>
 </head>
@@ -6101,7 +6123,7 @@ function initBorderGlowCards(){
 
   const field = document.getElementById('heroSkylineParticles');
   if (!field) return;
-  const N = 80;
+  const N = 46;
   for (let j = 0; j < N; j++) {
     const m = document.createElement('div');
     m.className = 'hero-skyline-mote';
@@ -6124,7 +6146,7 @@ function initBorderGlowCards(){
   }
 
   // bigger glowing orbs — rise slowly, hang in the air, then dissolve
-  const M = 32;
+  const M = 16;
   for (let k = 0; k < M; k++) {
     const o = document.createElement('div');
     o.className = 'hero-skyline-orb';
@@ -6158,7 +6180,7 @@ function initBorderGlowCards(){
   if (!ctx) return;
 
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
   const COLORS = ['rgba(156,122,56,', 'rgba(120,86,32,', 'rgba(80,58,24,'];
   let W = 0, H = 0, parts = [];
 
@@ -6182,7 +6204,7 @@ function initBorderGlowCards(){
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const count = Math.min(720, Math.round(W * 1.25));
+    const count = Math.min(320, Math.round(W * 0.55));
     parts = [];
     for (let i = 0; i < count; i++) parts.push(mk(false));
   }
