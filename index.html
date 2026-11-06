@@ -3998,6 +3998,21 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
   .hero-skyline-sweep::before { animation: none; display: none; }
   .hero:not(.animate-in) .hero-skyline-art svg, .hero-skyline-art svg { opacity: .5; transform: none; }
 }
+
+.ref-map .m-offmap { cursor: pointer; }
+.ref-map .m-off-bg { fill: rgba(13,10,6,.88); stroke: #E8C98A; stroke-width: 1.2; transition: fill .3s; }
+.ref-map .m-offmap:hover .m-off-bg, .ref-map .m-offmap:focus .m-off-bg { fill: #2a2114; }
+.ref-map .m-off-arrow { fill: #E8C98A; }
+.ref-map .m-off-t { fill: #F3EFE6; font: 700 9.5px var(--font-body); letter-spacing: .12em; text-transform: uppercase; }
+@media (max-width: 600px) { .ref-map .m-off-t { font-size: 13px; } }
+
+.baustelle-gallery-main > img.lb-bg { object-fit: cover; filter: blur(26px) brightness(.45) saturate(.9); transform: scale(1.2); animation: none; }
+.baustelle-gallery-main > img.lb-fg { object-fit: contain; }
+.ref-map-tip.below { transform: translate(-50%, 18px); }
+
+
+.ref-showcase .ref-card, .ref-showcase .ref-card.is-wide { grid-column: span var(--span, 4); }
+@media (max-width: 900px) { .ref-showcase .ref-card, .ref-showcase .ref-card.is-wide { grid-column: auto; } }
 </style>
 </head>
 <body>
@@ -4944,7 +4959,7 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
       <div class="ref-map-text">
         <div class="eyebrow">Einsatzgebiet</div>
         <h2>Zuhause im <span class="gleam-text">Rhein-Main</span>-Gebiet.</h2>
-        <p>Kurze Wege, persönlicher Service: Wir arbeiten mehrheitlich regional — rund um Frankfurt, Bad Vilbel, Hanau und Offenbach. Fahren Sie über die Punkte, um die Baustellen zu sehen.</p>
+        <p>Kurze Wege, persönlicher Service: Wir arbeiten mehrheitlich regional — rund um Frankfurt, Bad Vilbel, Hanau und Offenbach. Für größere Objekte auch darüber hinaus, wie in Wetzlar.</p>
         <div class="ref-map-legend"><span class="lg-dot"></span> Baustelle <span class="lg-hq"></span> Firmensitz <span class="lg-ring"></span> 10 / 20 km</div>
       </div>
       <div class="ref-map-wrap">
@@ -5524,28 +5539,28 @@ const REF_CATEGORIES = [
   { key: 'hochbau', label: 'Hochbau', icon: 'crane', desc: 'Neubau, Umbau und Gewerbebau — Mauerwerk, Beton und Schalungsarbeiten aus einer Hand.' },
   { key: 'tiefbau', label: 'Tiefbau', icon: 'pipe', desc: 'Erdarbeiten, Kanalbau und Werkleitungen — von der Grabung bis zur Übergabe.' },
   { key: 'modernisierung', label: 'Modernisierung', icon: 'wall', desc: 'Sanierung, Umbau und Erweiterung bestehender Gebäude — energetisch und wirtschaftlich.' },
-  { key: 'sanitaer', label: 'Sanitär & Heizung', icon: 'gauge', desc: 'Heizungsanlagen und Leitungsbau — moderne Installationstechnik nach Maß.' }
+  { key: 'sanitaer', label: 'Sanitär & Heizung', icon: 'gauge', desc: 'Sanitär- und Heizungsinstallation — im Neubau wie im Bestand.' }
 ];
 const RI = n => 'images/novus-bauunternehmung-' + n + '.webp';
 const REF_PROJECTS = [
-  { id: 12, category: 'hochbau', subcategory: 'Neubau', title: 'Wohnhochhaus Rohbau', location: 'Offenbach', leistung: 'Schalung, Bewehrung, Betondecken', zeitraum: '2024 – 2025', desc: 'Rohbau eines mehrgeschossigen Wohngebäudes — Schalung, Bewehrung und Betonage Geschoss für Geschoss im festen Takt, inklusive Gerüst- und Kranlogistik.', gallery: ['foto-20-1152x2048', 'foto-25-1152x2048', 'foto-8-1021x762', 'foto-9-738x975', 'foto-7-768x1024'] },
-  { id: 9, category: 'hochbau', subcategory: 'Neubau', title: 'Wohnanlage Neubau', location: 'Bad Vilbel', leistung: 'Rohbau, Ausbau, Außenanlagen', zeitraum: '2023 – 2024', desc: 'Neubau einer Wohnanlage mit gerundeten Balkonfronten — vom Rohbau bis zur Übergabe aus einer Hand koordiniert.', gallery: ['1-700x933', 'foto-6-723x969', 'foto-3-1600x1201'] },
-  { id: 4, category: 'hochbau', subcategory: 'Gewerbebau', title: 'Gewerbehalle Neubau', location: 'Eschborn', leistung: 'Fundamente, Stützen, Stahlbau-Vorarbeiten', zeitraum: 'Jan – Aug 2024', desc: 'Fundamente, Stützen und Bodenplatte für eine neue Gewerbehalle — realisiert in enger Taktung nach Vorgabe des Bauherrn.', gallery: ['foto-24-1152x2048', 'foto-4-471x353', 'foto-18-473x619', 'foto-22-1536x2048'] },
-  { id: 2, category: 'tiefbau', subcategory: 'Werkleitungen', title: 'Erschließung Baugebiet', location: 'Frankfurt Nord', leistung: 'Wasser-, Elektro- und Kommunikationsleitungen', zeitraum: 'Sep – Nov 2023', desc: 'Erdarbeiten und Verlegung von Wasser-, Elektro- und Kommunikationsleitungen für ein neues Wohngebiet — in enger Abstimmung mit Versorgern und Kommune.', gallery: ['foto-11-738x412', 'foto-10-1596x1164', 'foto-5-735x936'] },
-  { id: 7, category: 'modernisierung', subcategory: 'Umbau & Erweiterung', title: 'Logistikhalle Ausbau', location: 'Hanau', leistung: 'Umbau, Erweiterung, Innenausbau', zeitraum: 'Jun – Dez 2023', desc: 'Umbau und Erweiterung einer Logistikhalle bei laufendem Betrieb — Bauabschnitte so geplant, dass der Betrieb nie stillstand.', gallery: ['foto-23-2000x1500', 'foto-22-1536x2048', 'foto-24-1152x2048'] },
-  { id: 6, category: 'tiefbau', subcategory: 'Kanalbau', title: 'Baugrube & Kanalbau', location: 'Nidderau', leistung: 'Aushub, Rohrverlegung, Kontrollschächte', zeitraum: 'Mai – Jul 2023', desc: 'Baugrube, Rohrverlegung und Kontrollschächte für ein neues Baugebiet — termingerecht umgesetzt trotz anspruchsvoller Bodenverhältnisse.', gallery: ['foto-13-469x637', 'foto-14-733x547', 'foto-5-735x936'] },
-  { id: 3, category: 'modernisierung', subcategory: 'Sanierung', title: 'Dachsanierung Wohnanlage', location: 'Karben', leistung: 'Abdichtung, Dämmung, Attika', zeitraum: 'Apr – Okt 2023', desc: 'Energetische Sanierung eines Flachdachs — neue Abdichtung, Dämmung und Attikaabschluss bei bewohntem Gebäude.', gallery: ['foto-3-1600x1201', 'foto-6-723x969'] },
-  { id: 8, category: 'hochbau', subcategory: 'Umbau', title: 'Natursteinmauer & Hang', location: 'Bad Homburg', leistung: 'Naturstein-Stützmauer, Betonkern', zeitraum: 'Aug – Sep 2023', desc: 'Naturstein-Stützmauer mit Betonkern für eine Hanglage — statisch geprüft und handwerklich hochwertig gesetzt.', gallery: ['foto-1-468x615', 'foto-10-1596x1164'] },
-  { id: 5, category: 'sanitaer', subcategory: 'Leitungsbau', title: 'Leitungsbau in der Bodenplatte', location: 'Friedberg', leistung: 'Grundleitungen, Heizungsvorbereitung', zeitraum: 'Nov 2023 – Jan 2024', desc: 'Grund- und Heizungsleitungen vor der Betonage der Bodenplatte — sauber verlegt, geprüft und dokumentiert.', gallery: ['foto-15-1196x1574', 'foto-14-733x547'] },
-  { id: 1, category: 'hochbau', subcategory: 'Umbau', title: 'Rohbau Untergeschoss', location: 'Frankfurt Sachsenhausen', leistung: 'Schalung, Wände, Decke', zeitraum: 'Feb – Mai 2024', desc: 'Untergeschoss mit Wänden und Decke in Ortbeton — Schalung, Bewehrung und Betonage aus einer Hand.', gallery: ['foto-7-768x1024', 'foto-12-1195x1584', 'foto-9-738x975'] },
-  { id: 11, category: 'hochbau', subcategory: 'Gewerbebau', title: 'Bürogebäude', location: 'Offenbach', leistung: 'Rohbau, Fassadenvorbereitung', zeitraum: '2022', desc: 'Bürogebäude mit großflächiger Glasfront — Rohbau und Vorbereitung der Fassadenmontage.', gallery: ['2-740x600', '4-900x464'] }
+  { id: 13, category: 'sanitaer', subcategory: 'Sanitär komplett', title: 'Objekt Wetzlar', location: 'Wetzlar', leistung: 'Sanitärarbeiten komplett', zeitraum: '', real: true, desc: 'Komplette Sanitärarbeiten für ein großes Neubauobjekt in Wetzlar — ausgeführt von unserem Team vor Ort, von der Installation bis zur Fertigstellung.', gallery: ['images/wetzlar-1-neubau-fassade.jpg', 'images/wetzlar-2-neubau-bruecke.jpg', 'images/wetzlar-3-team-container.jpg', 'images/wetzlar-4-team-innen.jpg', 'images/wetzlar-5-team-aufzug.jpg', 'images/wetzlar-6-team-reinraum.jpg'] },
+  { id: 21, category: 'hochbau', subcategory: 'Rohbau', title: 'Mehrgeschossiger Rohbau', leistung: 'Schalung, Bewehrung, Beton', desc: 'Rohbau mehrgeschossiger Gebäude — Geschoss für Geschoss im festen Takt, mit Gerüst- und Kranlogistik.', gallery: ['foto-20-1152x2048', 'foto-25-1152x2048'] },
+  { id: 22, category: 'hochbau', subcategory: 'Betonarbeiten', title: 'Bewehrung & Betonage', leistung: 'Bewehrung, Betonage mit Pumpe', desc: 'Bewehrung von Decken und Bodenplatten und Betonage mit der Betonpumpe.', gallery: ['foto-8-1021x762', 'foto-9-738x975', 'foto-12-1195x1584'] },
+  { id: 23, category: 'hochbau', subcategory: 'Schalungsarbeiten', title: 'Schalung & Untergeschoss', leistung: 'Wand- und Deckenschalung', desc: 'Schalungsarbeiten für Wände und Untergeschosse in Ortbeton.', gallery: ['3-1152x768', 'foto-14-733x547', 'foto-7-768x1024'] },
+  { id: 28, category: 'tiefbau', subcategory: 'Erdarbeiten', title: 'Erdarbeiten & Baugrube', leistung: 'Aushub, Baugrube, Gelände', desc: 'Aushub, Baugruben und Geländearbeiten — vom Minibagger bis zum großen Gerät.', gallery: ['foto-13-469x637', 'foto-11-738x412', 'foto-10-1596x1164'] },
+  { id: 24, category: 'hochbau', subcategory: 'Gewerbebau', title: 'Hallen- & Gewerbebau', leistung: 'Fundamente, Stützen, Tragwerk', desc: 'Fundamente, Stützen und Tragwerk für Hallen und Gewerbebauten.', gallery: ['foto-24-1152x2048', 'foto-4-471x353', 'foto-18-473x619'] },
+  { id: 26, category: 'hochbau', subcategory: 'Neubau', title: 'Fertiggestellte Bauten', leistung: 'Wohn- und Gewerbebau', desc: 'Wohn- und Gewerbebauten nach der Fertigstellung.', gallery: ['1-700x933', '2-740x600', '4-900x464', 'foto-6-723x969'] },
+  { id: 29, category: 'tiefbau', subcategory: 'Fundamente', title: 'Fundamente & Grundleitungen', leistung: 'Streifenfundamente, Grundleitungen', desc: 'Streifenfundamente und Grundleitungen vor der Betonage der Bodenplatte.', gallery: ['foto-5-735x936', 'foto-15-1196x1574'] },
+  { id: 25, category: 'hochbau', subcategory: 'Innenausbau', title: 'Hallenausbau', leistung: 'Innenausbau mit Hubarbeitsbühnen', desc: 'Arbeiten im Innenausbau großer Hallen — mit Hubarbeitsbühnen und eng getaktet.', gallery: ['foto-23-2000x1500', 'foto-22-1536x2048'] },
+  { id: 27, category: 'hochbau', subcategory: 'Stützmauern', title: 'Natursteinmauer', leistung: 'Stützmauer aus Naturstein', desc: 'Stützmauer aus Naturstein an einer Hanglage.', gallery: ['foto-1-468x615'] },
+  { id: 30, category: 'modernisierung', subcategory: 'Dach', title: 'Dach & Abdichtung', leistung: 'Dämmung und Abdichtung', desc: 'Dämmung und Abdichtung einer Dachfläche.', gallery: ['foto-3-1600x1201'] }
 ];
-REF_PROJECTS.forEach(p => { p.gallery = p.gallery.map(RI); p.img = p.gallery[0]; });
+REF_PROJECTS.forEach(p => { p.gallery = p.gallery.map(g => g.indexOf('/') >= 0 ? g : RI(g)); p.img = p.gallery[0]; });
 
 const REF_COORDS = {
   'Frankfurt': [8.682, 50.110], 'Frankfurt Nord': [8.665, 50.160], 'Frankfurt Sachsenhausen': [8.690, 50.098],
   'Bad Vilbel': [8.736, 50.178], 'Offenbach': [8.802, 50.112], 'Hanau': [8.917, 50.132], 'Friedberg': [8.755, 50.335],
-  'Nidderau': [8.870, 50.238], 'Karben': [8.770, 50.232], 'Bad Homburg': [8.618, 50.226], 'Eschborn': [8.570, 50.143]
+  'Wetzlar': [8.5044, 50.5609], 'Nidderau': [8.870, 50.238], 'Karben': [8.770, 50.232], 'Bad Homburg': [8.618, 50.226], 'Eschborn': [8.570, 50.143]
 };
 
 let refState = { category: 'all', subcategory: 'all' };
@@ -5572,9 +5587,10 @@ function initFilters() {
     }
   }
   selectRefCategory('all', true);
+  setTimeout(() => window.__fitOffmap && window.__fitOffmap(), 60);
 }
 function renderRefCats() {
-  const cats = [{ key: 'all', label: 'Alle Projekte' }].concat(REF_CATEGORIES);
+  const cats = [{ key: 'all', label: 'Alle' }].concat(REF_CATEGORIES);
   document.getElementById('ref-cats').innerHTML = cats.map(c => {
     const n = c.key === 'all' ? REF_PROJECTS.length : REF_PROJECTS.filter(p => p.category === c.key).length;
     return '<button type="button" role="tab" class="ref-cat' + (refState.category === c.key ? ' active' : '') + '" aria-selected="' + (refState.category === c.key) + '" onclick="selectRefCategory(\'' + c.key + '\')">' + c.label + '<span class="n">' + n + '</span></button>';
@@ -5608,19 +5624,24 @@ function renderBaustellenGrid() {
   const grid = document.getElementById('ref-grid');
   const items = REF_PROJECTS.filter(p => (refState.category === 'all' || p.category === refState.category) && (refState.subcategory === 'all' || p.subcategory === refState.subcategory));
   const count = document.getElementById('ref-count');
-  if (count) count.innerHTML = '<b>' + String(items.length).padStart(2, '0') + '</b> Baustellen';
+  if (count) count.innerHTML = '<b>' + String(items.length).padStart(2, '0') + '</b> Referenzen';
+  // 12-column magazine rhythm; the last row is stretched so it never leaves a hole
   const pattern = [8, 4, 4, 4, 4, 4, 8];
+  const spans = items.map((p, i) => items.length > 2 ? pattern[i % 7] : 6);
+  let row = 0, rowStart = 0;
+  spans.forEach((sp, i) => { if (row + sp > 12) { row = 0; rowStart = i; } row += sp; if (row === 12) { row = 0; rowStart = i + 1; } });
+  if (row > 0 && row < 12) spans[spans.length - 1] += 12 - row;
   grid.innerHTML = items.map((p, i) => {
     const cat = REF_CATEGORIES.find(c => c.key === p.category);
-    const wide = items.length > 2 && pattern[i % 7] === 8;
-    return '<article class="ref-card' + (wide ? ' is-wide' : '') + '" data-id="' + p.id + '" tabindex="0" role="button" aria-label="' + p.title + ' ansehen">' +
+    const wide = spans[i] >= 8;
+    return '<article class="ref-card' + (wide ? ' is-wide' : '') + '" style="--span:' + spans[i] + '" data-id="' + p.id + '" tabindex="0" role="button" aria-label="' + p.title + ' ansehen">' +
       '<div class="ref-card-img"><img src="' + p.img + '" alt="' + p.title + '" loading="lazy" decoding="async"></div>' +
-      '<span class="ref-photo-count">' + p.gallery.length + ' Fotos</span>' +
+      '<span class="ref-photo-count">' + (p.real ? 'Projekt · ' : '') + p.gallery.length + (p.gallery.length === 1 ? ' Foto' : ' Fotos') + '</span>' +
       '<span class="ref-card-arrow">' + ARROW_SVG + '</span>' +
       '<div class="ref-card-body">' +
         '<div class="ref-badge">' + cat.label + ' · ' + p.subcategory + '</div>' +
         '<div class="ref-title">' + p.title + '</div>' +
-        '<div class="ref-meta"><span>' + PIN_SVG + p.location + '</span><span>' + CAL_SVG + p.zeitraum + '</span></div>' +
+        '<div class="ref-meta">' + (p.real ? '<span>' + PIN_SVG + p.location + '</span>' + (p.zeitraum ? '<span>' + CAL_SVG + p.zeitraum + '</span>' : '') : '<span>Leistungsbeispiel</span>') + '</div>' +
       '</div>' +
     '</article>';
   }).join('');
@@ -5694,14 +5715,48 @@ function buildRefMap() {
   h += '<g class="m-scale" transform="translate(22 ' + (MAP.H - 26) + ')"><path d="M0 0 H' + sb.toFixed(1) + ' M0 -4 V4 M' + sb.toFixed(1) + ' -4 V4 M' + (sb / 2).toFixed(1) + ' -2.5 V2.5"/><text x="0" y="-8">0</text><text x="' + sb.toFixed(1) + '" y="-8" text-anchor="middle">5 km</text></g>';
   h += '<text class="m-attr" x="' + (MAP.W - 10) + '" y="' + (MAP.H - 10) + '" text-anchor="end">Kartendaten © OpenStreetMap-Mitwirkende</text>';
 
-  // project pins
+  // project pins (projects beyond the frame get an edge marker with direction + distance)
+  const kmFromSeat = (lo, la) => {
+    const R = 6371, toR = Math.PI / 180, dLa = (la - 50.105) * toR, dLo = (lo - 8.757) * toR;
+    const a = Math.sin(dLa / 2) ** 2 + Math.cos(50.105 * toR) * Math.cos(la * toR) * Math.sin(dLo / 2) ** 2;
+    return Math.round(2 * R * Math.asin(Math.sqrt(a)));
+  };
   REF_PROJECTS.forEach((p, i) => {
     const c = REF_COORDS[p.location]; if (!c) return;
+    const px = X(c[0]), py = Y(c[1]);
+    if (px < 0 || px > MAP.W || py < 0 || py > MAP.H) {
+      const ex = Math.min(Math.max(px, 92), MAP.W - 92), ey = Math.min(Math.max(py, 30), MAP.H - 30);
+      const ang = Math.atan2(py - ey, px - ex) * 180 / Math.PI;
+      const label = p.location + ' · ' + kmFromSeat(c[0], c[1]) + ' km';
+      const w = label.length * 6.6 + 34;
+      h += '<g class="m-pin m-offmap" data-id="' + p.id + '" data-px="' + px.toFixed(1) + '" data-ey="' + ey.toFixed(1) + '" tabindex="0" role="button" aria-label="' + p.title + ', ' + p.location + ' (außerhalb des Kartenausschnitts)" transform="translate(' + ex.toFixed(1) + ' ' + ey.toFixed(1) + ')">' +
+           '<rect class="m-off-bg" x="' + (-w / 2).toFixed(1) + '" y="-13" width="' + w.toFixed(1) + '" height="26" rx="13"/>' +
+           '<g transform="translate(' + (-w / 2 + 15).toFixed(1) + ' 0) rotate(' + (ang + 90).toFixed(1) + ')"><path class="m-off-arrow" d="M0 -6 L5 3 L0 0.5 L-5 3 Z"/></g>' +
+           '<circle class="core" cx="' + (-w / 2 + 15).toFixed(1) + '" cy="0" r="0"/>' +
+           '<text class="m-off-t" x="' + (-w / 2 + 28).toFixed(1) + '" y="3.8">' + label + '</text></g>';
+      return;
+    }
     const jx = ((i * 37) % 11) - 5, jy = ((i * 53) % 9) - 4;
-    const x = X(c[0]) + jx, y = Y(c[1]) + jy;
+    const x = px + jx, y = py + jy;
     h += '<g class="m-pin" data-id="' + p.id + '" tabindex="0" role="button" aria-label="' + p.title + ', ' + p.location + '"><circle class="pulse" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="6" style="animation-delay:' + (i * 0.27).toFixed(2) + 's"/><circle class="core" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="6"/></g>';
   });
   svg.innerHTML = h;
+  // size the off-map pills to their text (font size differs on phones)
+  const fitOffmap = () => svg.querySelectorAll('.m-offmap').forEach(g => {
+    const t = g.querySelector('.m-off-t'), r = g.querySelector('.m-off-bg'), a = g.querySelector('g'), c = g.querySelector('.core');
+    const len = t.getComputedTextLength ? t.getComputedTextLength() : 0;
+    if (!len) return;
+    const w = len + 44, x0 = -w / 2;
+    const cx = Math.min(Math.max(parseFloat(g.dataset.px), w / 2 + 12), MAP.W - w / 2 - 12);
+    g.setAttribute('transform', 'translate(' + cx.toFixed(1) + ' ' + g.dataset.ey + ')');
+    r.setAttribute('x', x0.toFixed(1)); r.setAttribute('width', w.toFixed(1));
+    a.setAttribute('transform', a.getAttribute('transform').replace(/translate\([^)]*\)/, 'translate(' + (x0 + 15).toFixed(1) + ' 0)'));
+    c.setAttribute('cx', (x0 + 15).toFixed(1));
+    t.setAttribute('x', (x0 + 28).toFixed(1));
+  });
+  fitOffmap();
+  window.__fitOffmap = fitOffmap;
+  window.addEventListener('resize', () => requestAnimationFrame(fitOffmap));
 
   const tip = document.getElementById('ref-map-tip');
   const wrap = svg.parentElement;
@@ -5710,8 +5765,11 @@ function buildRefMap() {
     const core = pin.querySelector('.core');
     const r = core.getBoundingClientRect(), w = wrap.getBoundingClientRect();
     tip.innerHTML = '<img src="' + p.img + '" alt=""><div class="t"><span>' + p.location + '</span><b>' + p.title + '</b></div>';
-    tip.style.left = Math.min(Math.max(r.left - w.left + r.width / 2, 100), w.width - 100) + 'px';
-    tip.style.top = (r.top - w.top) + 'px';
+    const half = (tip.offsetWidth || 220) / 2 + 8;
+    tip.style.left = Math.min(Math.max(r.left - w.left + r.width / 2, half), w.width - half) + 'px';
+    const below = (r.top - w.top) < 210;
+    tip.classList.toggle('below', below);
+    tip.style.top = (below ? (r.bottom - w.top) : (r.top - w.top)) + 'px';
     tip.hidden = false;
     pin.classList.add('on');
   };
@@ -5733,11 +5791,13 @@ function openBaustelle(id) {
   const p = REF_PROJECTS.find(x => x.id === id);
   if (!p) return;
   const cat = REF_CATEGORIES.find(c => c.key === p.category);
-  document.getElementById('baustelle-eyebrow').textContent = cat.label + ' · ' + p.subcategory;
-  document.getElementById('baustelle-title').textContent = p.title + ' · ' + p.location;
-  document.getElementById('baustelle-standort').textContent = p.location;
+  document.getElementById('baustelle-eyebrow').textContent = cat.label + ' · ' + p.subcategory + (p.real ? '' : ' · Leistungsbeispiel');
+  document.getElementById('baustelle-title').textContent = p.real ? p.title + ' · ' + p.location : p.title;
+  document.getElementById('baustelle-standort').textContent = p.location || '';
+  document.getElementById('baustelle-standort').parentElement.style.display = p.real ? '' : 'none';
+  document.getElementById('baustelle-zeitraum').parentElement.style.display = p.real ? '' : 'none';
   document.getElementById('baustelle-leistung').textContent = p.leistung;
-  document.getElementById('baustelle-zeitraum').textContent = p.zeitraum;
+  document.getElementById('baustelle-zeitraum').textContent = p.zeitraum || 'Abgeschlossen';
   document.getElementById('baustelle-desc').textContent = p.desc;
   document.getElementById('baustelle-thumbs').innerHTML = p.gallery.map((src, i) =>
     '<button type="button" class="baustelle-thumb' + (i === 0 ? ' active' : '') + '" onclick="setBaustelleImage(' + i + ')" aria-label="Foto ' + (i + 1) + '"><img src="' + src + '" alt="" loading="lazy"></button>'
@@ -5752,7 +5812,7 @@ function setBaustelleImage(i) {
   baustelleGalleryIdx = i;
   const main = document.getElementById('baustelle-gallery-main');
   main.className = 'baustelle-gallery-main';
-  main.innerHTML = '<img src="' + p.gallery[i] + '" alt="' + p.title + ' – Foto ' + (i + 1) + '">' +
+  main.innerHTML = '<img class="lb-bg" src="' + p.gallery[i] + '" alt="" aria-hidden="true"><img class="lb-fg" src="' + p.gallery[i] + '" alt="' + p.title + ' – Foto ' + (i + 1) + '">' +
     '<span class="gal-label">' + (i + 1) + ' / ' + p.gallery.length + ' · ' + p.title + '</span>';
   document.querySelectorAll('.baustelle-thumb').forEach((t, idx) => t.classList.toggle('active', idx === i));
 }
