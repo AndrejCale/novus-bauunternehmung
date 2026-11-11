@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════
    DESIGN TOKENS
@@ -559,6 +560,10 @@ body.cursor-img #cursor-follower .cursor-label { opacity: 1; }
 .fab-popup-sub { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 .fab-popup-form .m-form-group { margin-bottom: 18px; }
 .fab-popup-submit { width: 100%; justify-content: center; margin-top: 4px; }
+.form-error { display: none; margin-top: 12px; padding: 10px 14px; border: 1px solid rgba(255,107,107,.45); border-radius: 6px; background: rgba(255,107,107,.08); color: #ff8a8a; font-size: 13px; line-height: 1.5; }
+.form-error.show { display: block; }
+.form-error a { color: inherit; text-decoration: underline; }
+.is-sending { opacity: .6; pointer-events: none; cursor: progress; }
 .fab-popup-success { display: none; text-align: center; padding: 16px 0 4px; }
 .fab-popup-success.visible { display: block; }
 .fab-popup-success .modal-success-ring { width: 60px; height: 60px; margin-bottom: 20px; }
@@ -4013,6 +4018,71 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
 
 .ref-showcase .ref-card, .ref-showcase .ref-card.is-wide { grid-column: span var(--span, 4); }
 @media (max-width: 900px) { .ref-showcase .ref-card, .ref-showcase .ref-card.is-wide { grid-column: auto; } }
+
+/* ── KONTAKT: office street map ── */
+.office-map-section { background: #0d0a06; padding: 120px 60px; position: relative; overflow: hidden; }
+.office-map-inner { max-width: 1320px; margin: 0 auto; display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr); gap: 64px; align-items: center; }
+.om-text h2 { font-family: var(--font-display); font-size: clamp(44px, 5vw, 76px); line-height: .95; letter-spacing: .02em; color: var(--text); margin: 18px 0 34px; text-wrap: balance; }
+.om-facts { display: grid; gap: 0; border-top: 1px solid var(--line); margin-bottom: 36px; }
+.om-facts > div { display: grid; grid-template-columns: 88px minmax(0,1fr); gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.om-facts dt { font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-muted); padding-top: 4px; }
+.om-facts dd { color: var(--text); font-size: 15px; line-height: 1.5; }
+.om-s { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #2e7d4f; color: #fff; font: 800 11px var(--font-body); margin-right: 6px; vertical-align: 1px; }
+.om-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.om-btn-line { display: inline-flex; align-items: center; padding: 16px 30px; border: 1px solid var(--line-strong); border-radius: 2px; color: var(--text); font-size: 11px; letter-spacing: .2em; text-transform: uppercase; transition: border-color .3s, background .3s, color .3s; }
+.om-btn-line:hover { border-color: var(--accent); background: rgba(212,177,115,.08); color: var(--accent-2); }
+
+.om-card { --mw: max(102%, 1000px); position: relative; aspect-ratio: 16 / 11; max-width: 100%; border-radius: 28px; overflow: hidden; border: 1px solid var(--line); background: #15110b; box-shadow: 0 40px 90px rgba(0,0,0,.45); isolation: isolate; }
+.om-map { position: absolute; inset: 0; display: block; cursor: grab; touch-action: pan-y; overflow: hidden; }
+.om-map.dragging { cursor: grabbing; }
+.om-map img { position: absolute; left: 50%; top: 50%; width: var(--mw); max-width: none; height: auto; transform-origin: 50.25% 53.65%; transform: translate(-50.25%, -53.65%); transition: transform .7s var(--ease-out); user-select: none; -webkit-user-drag: none; will-change: transform; }
+.om-map.dragging img { transition: none; }
+.om-map:focus-visible { outline: 2px solid var(--accent-2); outline-offset: -4px; border-radius: 28px; }
+.om-card::after { content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(232,201,138,.08), inset 0 0 80px rgba(0,0,0,.45); z-index: 2; }
+.om-coords, .om-hint, .om-attr, .om-zoom, .om-live { position: absolute; z-index: 3; }
+.om-coords { top: 18px; left: 18px; padding: 8px 12px; border-radius: 999px; background: rgba(13,10,6,.72); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font: 500 10px/1 ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: .12em; color: var(--accent-2); pointer-events: none; font-variant-numeric: tabular-nums; }
+.om-zoom { top: 18px; right: 18px; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; background: rgba(13,10,6,.78); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.om-zoom button { width: 40px; height: 40px; display: grid; place-items: center; background: none; border: 0; color: var(--text); font: 400 20px/1 var(--font-body); cursor: pointer; transition: background .25s, color .25s; }
+.om-zoom button + button { border-top: 1px solid var(--line); }
+.om-zoom button:hover { background: rgba(212,177,115,.14); color: var(--accent-2); }
+.om-zoom button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: -2px; }
+.om-zoom svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.om-hint { left: 18px; bottom: 18px; padding: 10px 16px; border-radius: 999px; background: var(--accent); color: #14110c; font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; pointer-events: none; transform: translateY(8px); opacity: .0; transition: opacity .35s, transform .45s var(--ease-out); }
+.om-card:hover .om-hint, .om-map:focus-visible ~ .om-hint { opacity: 1; transform: none; }
+.om-hint-mob { display: none; }
+.om-live { right: 18px; bottom: 34px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding: 10px 14px; border-radius: 12px; background: rgba(13,10,6,.78); border: 1px solid var(--line-strong); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--text); font: 600 10px var(--font-body); letter-spacing: .16em; text-transform: uppercase; cursor: pointer; transition: border-color .3s, background .3s; }
+.om-live small { font-size: 9px; font-weight: 400; letter-spacing: .04em; text-transform: none; color: var(--text-muted); }
+.om-live:hover { border-color: var(--accent); background: rgba(20,16,10,.92); }
+.om-live:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+.om-attr { right: 0; bottom: 0; padding: 4px 12px 5px; border-top-left-radius: 10px; background: rgba(13,10,6,.7); font-size: 10px; color: rgba(243,239,230,.6); }
+.om-attr a { text-decoration: underline; text-underline-offset: 2px; }
+.om-embed { position: absolute; inset: 0; z-index: 5; background: #15110b; }
+.om-embed iframe { width: 100%; height: 100%; border: 0; display: block; filter: grayscale(.25) contrast(1.02); }
+.om-close { position: absolute; top: 14px; right: 14px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-strong); background: rgba(13,10,6,.85); color: var(--text); font-size: 22px; line-height: 1; cursor: pointer; }
+.om-blocked[hidden], .om-embed[hidden] { display: none; }
+.om-blocked { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 20px; padding: 24px; text-align: center; color: var(--text-muted); }
+@media (hover: none) {
+  .om-hint { opacity: 1; transform: none; }
+  .om-hint-desk { display: none; } .om-hint-mob { display: inline; }
+}
+@media (max-width: 1024px) {
+  .office-map-inner { grid-template-columns: minmax(0,1fr); gap: 44px; }
+}
+@media (max-width: 768px) {
+  .office-map-section { padding: 80px 20px; }
+  .om-card { aspect-ratio: 4 / 5; border-radius: 22px; --mw: max(102%, 900px); }
+  .om-map:focus-visible { border-radius: 22px; }
+  .om-coords { top: 14px; left: 14px; }
+  .om-zoom { top: 14px; right: 14px; }
+  .om-hint { left: 14px; bottom: 14px; }
+  .om-live { left: 14px; right: auto; top: auto; bottom: 62px; align-items: flex-start; }
+  .om-actions > a { flex: 1 1 100%; justify-content: center; }
+  .om-facts > div { grid-template-columns: 72px minmax(0,1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .om-map img, .om-hint { transition: none; }
+}
+
 </style>
 </head>
 <body>
@@ -4164,9 +4234,10 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
         <p style="font-size:12px;color:var(--text-muted);opacity:.7;margin-bottom:8px">Mit dem Absenden stimmen Sie unseren Datenschutzbestimmungen zu.</p>
         <div class="modal-nav">
           <button class="btn-modal-back" onclick="modalBack(4)">← Zurück</button>
-          <button class="btn-modal-next" onclick="submitModal()"><span>Anfrage senden ✓</span></button>
+          <button class="btn-modal-next" id="modal-submit" onclick="submitModal()"><span>Anfrage senden ✓</span></button>
           <span class="step-counter">5 / 5</span>
         </div>
+        <div class="form-error" id="modal-error" role="alert"></div>
       </div>
     </div>
     <div id="modal-success">
@@ -4272,6 +4343,7 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
         <textarea class="m-form-input" id="fp-message" rows="3" required></textarea>
       </div>
       <button type="submit" class="btn-gold fab-popup-submit"><span>Absenden</span></button>
+      <div class="form-error" id="fab-error" role="alert"></div>
     </form>
     <div class="fab-popup-success" id="fabPopupSuccess">
       <div class="modal-success-ring"><svg viewBox="0 0 32 32"><polyline points="5,16 13,24 27,9"/></svg></div>
@@ -5074,6 +5146,7 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
           <textarea class="form-input" placeholder="Beschreiben Sie Ihr Projekt oder Anliegen..." id="f-msg"></textarea>
         </div>
         <a href="#" class="btn-gold" style="width:100%;justify-content:center" id="form-submit"><span>Nachricht senden</span></a>
+        <div class="form-error" id="form-error" role="alert"></div>
         <p class="form-legal">Mit dem Absenden stimmen Sie unseren Datenschutzbestimmungen zu.</p>
       </div>
       <div class="form-success" id="form-success">
@@ -5085,6 +5158,47 @@ textarea.m-form-input { resize: none; height: 100px; line-height: 1.6; }
       </div>
     </div>
   </div>
+
+  <!-- So finden Sie uns: static OSM street map, links out to Google Maps; optional 2-click embed -->
+  <section class="office-map-section dark-scope" id="office-map">
+    <div class="office-map-inner">
+      <div class="om-text">
+        <div class="eyebrow reveal-item">So finden Sie uns</div>
+        <h2 class="reveal-item">Unser Büro<br>in <span class="gleam-text">Offenbach.</span></h2>
+        <dl class="om-facts reveal-item">
+          <div><dt>Adresse</dt><dd>Frankfurter Str. 57<br>63067 Offenbach am Main</dd></div>
+          <div><dt>Lage</dt><dd>Innenstadt, Kreuzung Kaiserstraße</dd></div>
+          <div><dt>ÖPNV</dt><dd><span class="om-s">S</span> Offenbach-Ledermuseum · ca. 600&nbsp;m</dd></div>
+        </dl>
+        <div class="om-actions reveal-item">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Frankfurter+Str.+57,+63067+Offenbach+am+Main" target="_blank" rel="noopener" class="btn-gold"><span>In Google Maps öffnen ↗</span></a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Frankfurter+Str.+57,+63067+Offenbach+am+Main" target="_blank" rel="noopener" class="om-btn-line"><span>Route planen</span></a>
+        </div>
+      </div>
+
+      <div class="om-card" id="omCard">
+        <a class="om-map" id="omMap" href="https://www.google.com/maps/search/?api=1&amp;query=Frankfurter+Str.+57,+63067+Offenbach+am+Main" target="_blank" rel="noopener" aria-label="Standort Frankfurter Str. 57, Offenbach in Google Maps öffnen" draggable="false">
+          <img id="omImg" src="images/map-office-offenbach.svg" alt="Stadtplan Offenbach-Innenstadt mit Markierung Frankfurter Str. 57" draggable="false" decoding="async">
+        </a>
+        <div class="om-coords" aria-hidden="true">50,1049° N · 8,7581° O</div>
+        <div class="om-zoom" role="group" aria-label="Kartenzoom">
+          <button type="button" data-z="1" aria-label="Hineinzoomen">+</button>
+          <button type="button" data-z="-1" aria-label="Herauszoomen">−</button>
+          <button type="button" data-z="0" aria-label="Auf Büro zentrieren"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+        </div>
+        <div class="om-hint" aria-hidden="true"><span class="om-hint-desk">Klicken öffnet Google Maps · Ziehen verschiebt</span><span class="om-hint-mob">Tippen öffnet Google Maps</span> ↗</div>
+        <button type="button" class="om-live" id="omLive">Interaktive Karte laden<small>Dabei werden Daten an Google übertragen.</small></button>
+        <div class="om-attr">Kartendaten © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende</div>
+        <div class="om-embed" id="omEmbed" hidden>
+          <button type="button" class="om-close" id="omClose" aria-label="Interaktive Karte schließen">×</button>
+          <div class="om-blocked" id="omBlocked" hidden>
+            <p>Die interaktive Karte kann hier nicht geladen werden.</p>
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=Frankfurter+Str.+57,+63067+Offenbach+am+Main" target="_blank" rel="noopener" class="btn-gold"><span>In Google Maps öffnen ↗</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <footer>
     <div class="footer-bg-text">NOVUS</div>
@@ -5833,32 +5947,98 @@ function handleBaustelleOverlayClick(e) {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBaustelle(); });
 
+// ── EmailJS ──
+// IDs from emailjs.com: Account → General (Public Key), Email Services (Service ID), Email Templates (Template IDs).
+const EMAILJS_CONFIG = {
+  publicKey:        'vfP2uTmGS4Tf6qjWv',
+  serviceId:        'service_2mv42ul',
+  templateAnfrage:  'template_dw7kzk9',  // 5-step Projekt-Anfrage
+  templateKontakt:  'template_uebbc4o'   // Kontakt section + floating button
+};
+const EMAILJS_READY = !Object.values(EMAILJS_CONFIG).some(v => v.startsWith('YOUR_'));
+if (EMAILJS_READY && window.emailjs) emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey });
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const FALLBACK_MAIL = 'info@novus-bauunternehmung.de';
+
+function flagField(f, ms) {
+  f.style.borderColor = '#ff6b6b';
+  setTimeout(() => f.style.borderColor = '', ms || 2000);
+}
+function setSending(btn, on) {
+  if (!btn) return;
+  const label = btn.querySelector('span');
+  if (on) {
+    btn.dataset.label = label ? label.textContent : '';
+    if (label) label.textContent = 'Wird gesendet…';
+    btn.classList.add('is-sending');
+    btn.setAttribute('aria-disabled', 'true');
+    if ('disabled' in btn) btn.disabled = true;
+  } else {
+    if (label && btn.dataset.label) label.textContent = btn.dataset.label;
+    btn.classList.remove('is-sending');
+    btn.removeAttribute('aria-disabled');
+    if ('disabled' in btn) btn.disabled = false;
+  }
+}
+function showFormError(id, show) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (show) {
+    el.innerHTML = 'Die Nachricht konnte leider nicht gesendet werden. Bitte versuchen Sie es erneut oder schreiben Sie uns direkt an <a href="mailto:' + FALLBACK_MAIL + '">' + FALLBACK_MAIL + '</a>.';
+    el.classList.add('show');
+  } else {
+    el.classList.remove('show');
+  }
+}
+function sendEmail(templateId, params) {
+  if (!EMAILJS_READY) return Promise.reject(new Error('EmailJS is not configured yet (EMAILJS_CONFIG).'));
+  if (!window.emailjs) return Promise.reject(new Error('EmailJS script failed to load.'));
+  return emailjs.send(EMAILJS_CONFIG.serviceId, templateId, params);
+}
+// Shared validation: required fields non-empty, email well-formed. Returns true when OK.
+function validateFields(required, emailField) {
+  let ok = true;
+  required.forEach(f => { if (f && !f.value.trim()) { flagField(f); ok = false; } });
+  if (emailField && emailField.value.trim() && !EMAIL_RE.test(emailField.value.trim())) { flagField(emailField); ok = false; }
+  return ok;
+}
+
 // ── Contact Form ──
 document.addEventListener('click', e => {
   if (e.target.closest('#form-submit')) {
     e.preventDefault();
+    const btn = e.target.closest('#form-submit');
+    if (btn.classList.contains('is-sending')) return;
     const name = document.getElementById('f-name');
     const email = document.getElementById('f-email');
+    const tel = document.getElementById('f-tel');
     const msg = document.getElementById('f-msg');
     if (!name || !email || !msg) return;
-    if (!name.value || !email.value || !msg.value) {
-      [name, email, msg].forEach(f => {
-        if (!f.value) {
-          f.style.borderColor = '#ff6b6b';
-          setTimeout(() => f.style.borderColor = '', 1500);
-        }
-      });
-      return;
-    }
+    if (!validateFields([name, email, msg], email)) return;
     const form = document.getElementById('contact-form');
     const success = document.getElementById('form-success');
     if (!form || !success) return;
+    showFormError('form-error', false);
+    setSending(btn, true);
+    sendEmail(EMAILJS_CONFIG.templateKontakt, {
+      name: name.value.trim(),
+      email: email.value.trim(),
+      telefon: (tel && tel.value.trim()) || '–',
+      nachricht: msg.value.trim(),
+      quelle: 'Kontaktbereich'
+    }).then(() => {
+    setSending(btn, false);
     gsap.to(form, { opacity: 0, y: -20, duration: 0.4, ease: 'power3.in', onComplete: () => {
       form.style.display = 'none';
       success.style.display = 'block';
       success.classList.add('visible');
       gsap.fromTo(success, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
     }});
+    }).catch(err => {
+      console.error('Kontaktformular:', err);
+      setSending(btn, false);
+      showFormError('form-error', true);
+    });
   }
 });
 
@@ -5986,23 +6166,44 @@ function modalBack(step){
   }
 }
 function submitModal(){
+  const btn=document.getElementById('modal-submit');
+  if(btn&&btn.classList.contains('is-sending')) return;
   const fname=document.getElementById('m-fname');
+  const lname=document.getElementById('m-lname');
   const tel=document.getElementById('m-tel');
   const email=document.getElementById('m-email');
-  let ok=true;
-  [fname,tel,email].forEach(f=>{
-    if(f&&!f.value){ f.style.borderColor='#ff6b6b'; setTimeout(()=>f.style.borderColor='',2000); ok=false; }
-  });
-  if(!ok) return;
+  const notiz=document.getElementById('m-notiz');
+  if(!validateFields([fname,lname,tel,email],email)) return;
   const fw=document.getElementById('modal-form-wrap');
   const ms=document.getElementById('modal-success');
   if(!fw||!ms) return;
+  const l=modalData.leistung;
+  showFormError('modal-error',false);
+  setSending(btn,true);
+  sendEmail(EMAILJS_CONFIG.templateAnfrage,{
+    leistung: Array.isArray(l)?l.join(', '):(l||'–'),
+    objekt: modalData.objekt||'–',
+    zeitplan: modalData.zeitplan||'–',
+    budget: modalData.budget||'–',
+    ort: modalData.ort||'–',
+    notiz: (notiz&&notiz.value.trim())||'–',
+    vorname: fname.value.trim(),
+    nachname: lname.value.trim(),
+    telefon: tel.value.trim(),
+    email: email.value.trim()
+  }).then(()=>{
+  setSending(btn,false);
   const sm=document.getElementById('modal-summary'); if(sm) sm.textContent=buildModalSummary();
   gsap.to(fw,{opacity:0,y:-20,duration:.4,ease:'power3.in',onComplete:()=>{
     fw.style.display='none';
     ms.style.display='block';
     gsap.fromTo(ms,{opacity:0,y:20},{opacity:1,y:0,duration:.5,ease:'power3.out',onComplete:()=>ms.classList.add('visible')});
   }});
+  }).catch(err=>{
+    console.error('Projektanfrage:',err);
+    setSending(btn,false);
+    showFormError('modal-error',true);
+  });
 }
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
@@ -6025,6 +6226,7 @@ function resetFabPopup(){
   const success=document.getElementById('fabPopupSuccess');
   if(form){ form.style.display='block'; form.style.opacity=1; form.style.transform='none'; form.reset(); }
   if(success){ success.style.display='none'; success.classList.remove('visible'); }
+  showFormError('fab-error',false);
 }
 function openFabPopup(){
   const btn=document.getElementById('fabContactBtn');
@@ -6065,19 +6267,32 @@ function submitFabPopup(e){
   const name=document.getElementById('fp-name');
   const email=document.getElementById('fp-email');
   const message=document.getElementById('fp-message');
-  let ok=true;
-  [name,email,message].forEach(f=>{
-    if(f&&!f.value){ f.style.borderColor='#ff6b6b'; setTimeout(()=>f.style.borderColor='',2000); ok=false; }
-  });
-  if(!ok) return;
   const form=document.getElementById('fabPopupForm');
   const success=document.getElementById('fabPopupSuccess');
+  const btn=form&&form.querySelector('.fab-popup-submit');
+  if(btn&&btn.classList.contains('is-sending')) return;
+  if(!validateFields([name,email,message],email)) return;
   if(!form||!success) return;
+  showFormError('fab-error',false);
+  setSending(btn,true);
+  sendEmail(EMAILJS_CONFIG.templateKontakt,{
+    name: name.value.trim(),
+    email: email.value.trim(),
+    telefon: '–',
+    nachricht: message.value.trim(),
+    quelle: 'Schnellkontakt (Button)'
+  }).then(()=>{
+  setSending(btn,false);
   gsap.to(form,{opacity:0,y:-14,duration:.35,ease:'power3.in',onComplete:()=>{
     form.style.display='none';
     success.style.display='block';
     gsap.fromTo(success,{opacity:0,y:16},{opacity:1,y:0,duration:.45,ease:'power3.out',onComplete:()=>success.classList.add('visible')});
   }});
+  }).catch(err=>{
+    console.error('Schnellkontakt:',err);
+    setSending(btn,false);
+    showFormError('fab-error',true);
+  });
 }
 // Year
 document.querySelectorAll('#yr,.yr').forEach(el=>el.textContent=new Date().getFullYear());
@@ -6352,6 +6567,7 @@ function initRedesign() {
   initProcess();
   initDeviceTilt();
   initFabWatch();
+  initOfficeMap();
   updateNavTheme();
   initMagnetic();
   rdMarqueeCache = null;
@@ -6537,6 +6753,60 @@ function zoomTileIntoRef(tile) {
 
 // ── floating CTA steps aside where another CTA is on screen ──
 let rdFabIO = null;
+// ── Kontakt: office street map — pan/zoom the static plan, click opens Google Maps ──
+function initOfficeMap() {
+  const card = document.getElementById('omCard'), map = document.getElementById('omMap'), img = document.getElementById('omImg');
+  if (!card || card.dataset.ready) return;
+  card.dataset.ready = '1';
+  const st = { x: 0, y: 0, z: 1 };
+  const clamp = () => {
+    const cw = map.clientWidth, ch = map.clientHeight, w = img.offsetWidth * st.z, h = img.offsetHeight * st.z;
+    if (!w || !h) return;
+    const lim = (v, a, b) => Math.min(Math.max(v, Math.min(a, b)), Math.max(a, b));
+    st.x = lim(st.x, cw / 2 - .4975 * w, .5025 * w - cw / 2);
+    st.y = lim(st.y, ch / 2 - .4635 * h, .5365 * h - ch / 2);
+  };
+  const apply = () => { clamp(); img.style.transform = `translate(-50.25%, -53.65%) translate(${st.x}px, ${st.y}px) scale(${st.z})`; };
+  card.querySelectorAll('.om-zoom button').forEach(b => b.addEventListener('click', () => {
+    const d = +b.dataset.z;
+    if (d === 0) { st.x = 0; st.y = 0; st.z = 1; }
+    else { const nz = Math.min(2.2, Math.max(.85, st.z * (d > 0 ? 1.35 : 1 / 1.35))); st.x *= nz / st.z; st.y *= nz / st.z; st.z = nz; }
+    apply();
+  }));
+  // mouse drag pans; a press without movement stays a normal link click
+  let drag = null, moved = false;
+  map.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    drag = { sx: e.clientX, sy: e.clientY, x: st.x, y: st.y }; moved = false;
+  });
+  window.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+    if (!moved && Math.hypot(dx, dy) < 5) return;
+    moved = true; map.classList.add('dragging');
+    st.x = drag.x + dx; st.y = drag.y + dy; apply();
+  });
+  window.addEventListener('pointerup', () => { if (drag) { drag = null; map.classList.remove('dragging'); } });
+  map.addEventListener('click', e => { if (moved) { e.preventDefault(); moved = false; } });
+  window.addEventListener('resize', apply);
+
+  // optional Google embed — only loaded after an explicit click (DSGVO)
+  const embed = document.getElementById('omEmbed'), blocked = document.getElementById('omBlocked');
+  document.getElementById('omLive').addEventListener('click', () => {
+    embed.hidden = false;
+    if (embed.querySelector('iframe')) return;
+    const f = document.createElement('iframe');
+    f.title = 'Google Maps: Frankfurter Str. 57, Offenbach am Main';
+    f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade';
+    f.src = 'https://www.google.com/maps?q=Frankfurter+Str.+57,+63067+Offenbach+am+Main&z=16&output=embed';
+    embed.insertBefore(f, blocked);
+  });
+  document.addEventListener('securitypolicyviolation', e => {
+    if (/google\./.test(e.blockedURI || '')) { const f = embed.querySelector('iframe'); if (f) f.remove(); blocked.hidden = false; }
+  });
+  document.getElementById('omClose').addEventListener('click', () => { embed.hidden = true; });
+}
+
 function initFabWatch() {
   const fab = document.getElementById('fabContactBtn');
   if (!fab) return;
