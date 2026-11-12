@@ -5655,8 +5655,11 @@ const REF_CATEGORIES = [
   { key: 'modernisierung', label: 'Modernisierung', icon: 'wall', desc: 'Sanierung, Umbau und Erweiterung bestehender Gebäude — energetisch und wirtschaftlich.' },
   { key: 'sanitaer', label: 'Sanitär & Heizung', icon: 'gauge', desc: 'Sanitär- und Heizungsinstallation — im Neubau wie im Bestand.' }
 ];
+const inRefCat = (p, key) => key === 'all' || (p.cats || [p.category]).includes(key);
+const refBadge = p => p.badge || (REF_CATEGORIES.find(c => c.key === p.category).label + ' · ' + p.subcategory);
 const RI = n => 'images/novus-bauunternehmung-' + n + '.webp';
 const REF_PROJECTS = [
+  { id: 14, category: 'hochbau', cats: ['hochbau', 'tiefbau', 'modernisierung', 'sanitaer'], badge: 'Hoch- & Tiefbau · Haustechnik', subcategory: 'Gesamtausführung', title: 'Objekt Querstraße', location: 'Querstraße', leistung: 'Hoch- & Tiefbau, Abbrucharbeiten, Sanitär & Heizung, Lüftung, Elektro, Klima', zeitraum: '', real: true, desc: 'Gewerkeübergreifende Ausführung an einem Bürogebäude in der Querstraße: Hoch- und Tiefbau, Abbrucharbeiten sowie die komplette Haustechnik — Sanitär und Heizung, Lüftung, Elektro und Klima. Alles aus einer Hand, von der Baustelleneinrichtung bis zur Fertigstellung.', gallery: ['images/querstrasse-1-fassade.webp', 'images/querstrasse-2-geruest-anlieferung.jpg'] },
   { id: 13, category: 'sanitaer', subcategory: 'Sanitär komplett', title: 'Objekt Wetzlar', location: 'Wetzlar', leistung: 'Sanitärarbeiten komplett', zeitraum: '', real: true, desc: 'Komplette Sanitärarbeiten für ein großes Neubauobjekt in Wetzlar — ausgeführt von unserem Team vor Ort, von der Installation bis zur Fertigstellung.', gallery: ['images/wetzlar-1-neubau-fassade.jpg', 'images/wetzlar-2-neubau-bruecke.jpg', 'images/wetzlar-3-team-container.jpg', 'images/wetzlar-4-team-innen.jpg', 'images/wetzlar-5-team-aufzug.jpg', 'images/wetzlar-6-team-reinraum.jpg'] },
   { id: 21, category: 'hochbau', subcategory: 'Rohbau', title: 'Mehrgeschossiger Rohbau', leistung: 'Schalung, Bewehrung, Beton', desc: 'Rohbau mehrgeschossiger Gebäude — Geschoss für Geschoss im festen Takt, mit Gerüst- und Kranlogistik.', gallery: ['foto-20-1152x2048', 'foto-25-1152x2048'] },
   { id: 22, category: 'hochbau', subcategory: 'Betonarbeiten', title: 'Bewehrung & Betonage', leistung: 'Bewehrung, Betonage mit Pumpe', desc: 'Bewehrung von Decken und Bodenplatten und Betonage mit der Betonpumpe.', gallery: ['foto-8-1021x762', 'foto-9-738x975', 'foto-12-1195x1584'] },
@@ -5706,7 +5709,7 @@ function initFilters() {
 function renderRefCats() {
   const cats = [{ key: 'all', label: 'Alle' }].concat(REF_CATEGORIES);
   document.getElementById('ref-cats').innerHTML = cats.map(c => {
-    const n = c.key === 'all' ? REF_PROJECTS.length : REF_PROJECTS.filter(p => p.category === c.key).length;
+    const n = c.key === 'all' ? REF_PROJECTS.length : REF_PROJECTS.filter(p => inRefCat(p, c.key)).length;
     return '<button type="button" role="tab" class="ref-cat' + (refState.category === c.key ? ' active' : '') + '" aria-selected="' + (refState.category === c.key) + '" onclick="selectRefCategory(\'' + c.key + '\')">' + c.label + '<span class="n">' + n + '</span></button>';
   }).join('');
 }
@@ -5718,7 +5721,7 @@ function selectRefCategory(catKey, silent) {
   const sub = document.getElementById('ref-subfilters');
   if (refState.category === 'all') sub.innerHTML = '';
   else {
-    const subcats = [...new Set(REF_PROJECTS.filter(p => p.category === refState.category).map(p => p.subcategory))];
+    const subcats = [...new Set(REF_PROJECTS.filter(p => inRefCat(p, refState.category)).map(p => p.subcategory))];
     sub.innerHTML = subcats.length > 1 ? '<button class="filter-btn active" onclick="selectRefSubcategory(\'all\',this)">Alle</button>' +
       subcats.map(s => '<button class="filter-btn" onclick="selectRefSubcategory(\'' + s + '\',this)">' + s + '</button>').join('') : '';
   }
@@ -5736,7 +5739,7 @@ function selectRefSubcategory(sub, btn) {
 }
 function renderBaustellenGrid() {
   const grid = document.getElementById('ref-grid');
-  const items = REF_PROJECTS.filter(p => (refState.category === 'all' || p.category === refState.category) && (refState.subcategory === 'all' || p.subcategory === refState.subcategory));
+  const items = REF_PROJECTS.filter(p => inRefCat(p, refState.category) && (refState.subcategory === 'all' || p.subcategory === refState.subcategory));
   const count = document.getElementById('ref-count');
   if (count) count.innerHTML = '<b>' + String(items.length).padStart(2, '0') + '</b> Referenzen';
   // 12-column magazine rhythm; the last row is stretched so it never leaves a hole
@@ -5746,14 +5749,13 @@ function renderBaustellenGrid() {
   spans.forEach((sp, i) => { if (row + sp > 12) { row = 0; rowStart = i; } row += sp; if (row === 12) { row = 0; rowStart = i + 1; } });
   if (row > 0 && row < 12) spans[spans.length - 1] += 12 - row;
   grid.innerHTML = items.map((p, i) => {
-    const cat = REF_CATEGORIES.find(c => c.key === p.category);
     const wide = spans[i] >= 8;
     return '<article class="ref-card' + (wide ? ' is-wide' : '') + '" style="--span:' + spans[i] + '" data-id="' + p.id + '" tabindex="0" role="button" aria-label="' + p.title + ' ansehen">' +
       '<div class="ref-card-img"><img src="' + p.img + '" alt="' + p.title + '" loading="lazy" decoding="async"></div>' +
       '<span class="ref-photo-count">' + (p.real ? 'Projekt · ' : '') + p.gallery.length + (p.gallery.length === 1 ? ' Foto' : ' Fotos') + '</span>' +
       '<span class="ref-card-arrow">' + ARROW_SVG + '</span>' +
       '<div class="ref-card-body">' +
-        '<div class="ref-badge">' + cat.label + ' · ' + p.subcategory + '</div>' +
+        '<div class="ref-badge">' + refBadge(p) + '</div>' +
         '<div class="ref-title">' + p.title + '</div>' +
         '<div class="ref-meta">' + (p.real ? '<span>' + PIN_SVG + p.location + '</span>' + (p.zeitraum ? '<span>' + CAL_SVG + p.zeitraum + '</span>' : '') : '<span>Leistungsbeispiel</span>') + '</div>' +
       '</div>' +
@@ -5765,7 +5767,7 @@ function renderBaustellenGrid() {
   }
   document.querySelectorAll('#ref-map .m-pin').forEach(pin => {
     const p = REF_PROJECTS.find(x => x.id === +pin.dataset.id);
-    pin.style.opacity = (refState.category === 'all' || (p && p.category === refState.category)) ? '1' : '0.2';
+    pin.style.opacity = (p && inRefCat(p, refState.category)) ? '1' : '0.2';
   });
 }
 
@@ -5904,12 +5906,11 @@ let baustelleGalleryIdx = 0;
 function openBaustelle(id) {
   const p = REF_PROJECTS.find(x => x.id === id);
   if (!p) return;
-  const cat = REF_CATEGORIES.find(c => c.key === p.category);
-  document.getElementById('baustelle-eyebrow').textContent = cat.label + ' · ' + p.subcategory + (p.real ? '' : ' · Leistungsbeispiel');
-  document.getElementById('baustelle-title').textContent = p.real ? p.title + ' · ' + p.location : p.title;
+  document.getElementById('baustelle-eyebrow').textContent = refBadge(p) + (p.real ? '' : ' · Leistungsbeispiel');
+  document.getElementById('baustelle-title').textContent = p.real && p.title.indexOf(p.location) < 0 ? p.title + ' · ' + p.location : p.title;
   document.getElementById('baustelle-standort').textContent = p.location || '';
   document.getElementById('baustelle-standort').parentElement.style.display = p.real ? '' : 'none';
-  document.getElementById('baustelle-zeitraum').parentElement.style.display = p.real ? '' : 'none';
+  document.getElementById('baustelle-zeitraum').parentElement.style.display = p.real && p.zeitraum ? '' : 'none';
   document.getElementById('baustelle-leistung').textContent = p.leistung;
   document.getElementById('baustelle-zeitraum').textContent = p.zeitraum || 'Abgeschlossen';
   document.getElementById('baustelle-desc').textContent = p.desc;
